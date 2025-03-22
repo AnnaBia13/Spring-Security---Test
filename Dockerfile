@@ -1,35 +1,27 @@
-#Etapa de construção
-#FROM maven:3.4.3-openjdk-21 AS build
-FROM ubuntu:latest AS build
-#FROM openjdk:21-jdk-slim AS build
-#RUN apt-get update && apt-get-install -y maven && apt-get clean && rm -rf/var/lib/apt/lists/*
-RUN apt-get update
-RUN apt-get install openjdk-21-jdk -y
+# Etapa de construção
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 
-#Definir o diretório dentro do container para a aplicação
-#WORKDIR /app
+# Definir o diretório de trabalho
+WORKDIR /app
 
-#Copiar o pom.xml para o container
-#COPY pom.xml .
-#COPY src ./src
+# Copiar os arquivos do projeto
+COPY Spring-Security---Test/pom.xml /app/
+COPY Spring-Security---Test/src/ /app/src/
 
-COPY . . 
 
-#Executar o Maven para compilar projeto e gerar o JAR File
+
+# Compilar o projeto
 RUN mvn clean package -DskipTests
 
-#Etapa de execução
-FROM openjdk:21-jdk-slim
+# Etapa de execução
+FROM openjdk:21-slim
+WORKDIR /app
 
-#Definir o diretório de trabalho para a aplicação
-#WORKDIR /app
+# Copiar o JAR gerado
+COPY --from=build /app/target/*.jar app.jar
 
-#Definir a Porta que será utilizada na aplicação
+# Expor a porta
 EXPOSE 8080
 
-#Copiar o JAR construído na etapa anterior
-COPY --from=target /target/rest-service.jar app.jar
-
-
-#Comando para executar a aplicação
-ENTRYPOINT [ "java", "-jar", app.jar ]
+# Rodar a aplicação
+ENTRYPOINT ["java", "-jar", "app.jar"]
