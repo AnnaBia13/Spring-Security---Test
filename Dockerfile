@@ -28,7 +28,7 @@ FROM openjdk:21-jdk-slim
 EXPOSE 8080
 
 #Copiar o JAR construído na etapa anterior
-COPY --from=target /target/*.jar app.jar
+COPY --from=target /app/target/*.jar app.jar
 
 
 #Comando para executar a aplicação
