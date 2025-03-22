@@ -1,0 +1,19 @@
+package com.login.springsecurity.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+
+@Controller
+public class HomeController {
+
+    @GetMapping("/")
+    public String showHome() {
+        return "index";
+    }
+
+    @GetMapping("/contato")
+    public String Contato () {
+        return "contato";
+    }
+}
